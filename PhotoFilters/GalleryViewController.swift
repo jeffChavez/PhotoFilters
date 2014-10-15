@@ -26,15 +26,16 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
         self.photoCollectionView.dataSource = self
         self.photoCollectionView.delegate = self
         
-        var image1 = UIImage(named: "Ace")
-        var image2 = UIImage(named: "Two")
-        var image3 = UIImage(named: "Three")
-        var image4 = UIImage(named: "Four")
+        var image1 = UIImage(named: "edmPic1")
+        var image2 = UIImage(named: "edmPic2")
+        var image3 = UIImage(named: "edmPic3")
+        var image4 = UIImage(named: "edmPic4")
         
         self.images.append(image1)
         self.images.append(image2)
         self.images.append(image3)
         self.images.append(image4)
+        
         // Do any additional setup after loading the view.
     }
 
@@ -56,5 +57,17 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         delegate?.didTapOnPicture(self.images[indexPath.row])
         self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
+        if kind == UICollectionElementKindSectionHeader {
+            let header = collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: "GALLERY_CELL_HEADER", forIndexPath: indexPath) as Header
+            header.sectionHeaderLabel.text = "Photos"
+            return header
+        } else {
+            let footer = collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: "GALLERY_CELL_FOOTER", forIndexPath: indexPath) as Footer
+            footer.sectionFooterLabel.text = String(self.images.count)
+            return footer
+        }
     }
 }
