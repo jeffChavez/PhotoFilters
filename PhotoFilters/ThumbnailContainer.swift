@@ -8,24 +8,24 @@
 
 import UIKit
 
-class FilterThumbnail {
+class ThumbnailContainer {
     
     var originalThumbnail : UIImage
     var filteredThumbnail : UIImage?
-    var imageQueue : NSOperationQueue?
+    var imageQueue : NSOperationQueue
+    var ciFilter : CIFilter?
     var gpuContext : CIContext
-    var filter : CIFilter?
     var filterName : String
     
-    init (name: String, thumbnail: UIImage, queue: NSOperationQueue, context: CIContext) {
-        self.filterName = name
+    init(filterName : String, thumbnail : UIImage, queue : NSOperationQueue, context : CIContext) {
+        self.filterName = filterName
         self.originalThumbnail = thumbnail
         self.imageQueue = queue
         self.gpuContext = context
     }
     
-    func generateThumbnail (completionHandler: (image: UIImage) -> Void) {
-        self.imageQueue?.addOperationWithBlock({ () -> Void in
+    func generateFilterThumbnail (completionHandler: (filteredThumb: UIImage) -> Void) {
+        self.imageQueue.addOperationWithBlock({ () -> Void in
             //set up filter with a CIImage
             var image = CIImage(image: self.originalThumbnail)
             var imageFilter = CIFilter(name: self.filterName)
@@ -36,10 +36,11 @@ class FilterThumbnail {
             var result = imageFilter.valueForKey(kCIOutputImageKey) as CIImage
             var extent = result.extent()
             var imageRef = self.gpuContext.createCGImage(result, fromRect: extent)
-            self.filter = imageFilter
-            self.filteredThumbnail = UIImage(CGImage: imageRef)
+            self.ciFilter = imageFilter
+            
             NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                completionHandler(image: self.filteredThumbnail!)
+                self.filteredThumbnail = UIImage(CGImage: imageRef)
+                completionHandler(filteredThumb: self.filteredThumbnail!)
             })
         })
     }

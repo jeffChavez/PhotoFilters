@@ -8,6 +8,6 @@
 
 import UIKit
 
-class FilterThumbnailCell: UICollectionViewCell {
+class ThumbnailCell: UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
 }

@@ -20,46 +20,92 @@ class ViewController: UIViewController, GalleryDelegate, UIImagePickerController
     @IBOutlet var imageViewTrailingConstraint : NSLayoutConstraint!
     @IBOutlet var imageViewBottomConstraint : NSLayoutConstraint!
     
-    var filterArray = [Filter]()
-    var filterThumbnails = [FilterThumbnail]()
-    var coreImageContext : CIContext?
+    var managedObjectContext : NSManagedObjectContext!
+    var filterArray : [Filter]?
+    var thumbnailContainers = [ThumbnailContainer]()
     var originalThumbnail : UIImage?
-    let imageQueue = NSOperationQueue()
+    var gpuContext : CIContext?
+    var imageQueue = NSOperationQueue()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //Core Image Context
+        //get gpu context
         var options = [kCIContextWorkingColorSpace : NSNull()]
         var myEAGLContext = EAGLContext(API: EAGLRenderingAPI.OpenGLES2)
-        self.coreImageContext = CIContext(EAGLContext: myEAGLContext, options: options)
+        self.gpuContext = CIContext(EAGLContext: myEAGLContext, options: options)
         
-        var appDelegate = UIApplication.sharedApplication().delegate as AppDelegate
-        var seeder = CoreDataSeeder(context: appDelegate.managedObjectContext!)
+        let appDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+        self.managedObjectContext = appDelegate.managedObjectContext
         
-        self.fetchFilters()
-        self.generateThumbnail()
-        
-        if filterArray.isEmpty {
-            seeder.seedCoreData()
-            self.fetchFilters()
+        let fetchRequest = NSFetchRequest(entityName: "Filter")
+        var error : NSError?
+        if let filters = self.managedObjectContext.executeFetchRequest(fetchRequest, error: &error) as? [Filter] {
+            if filters.isEmpty {
+                self.seedCoreData()
+                self.filterArray = self.managedObjectContext.executeFetchRequest(fetchRequest, error: &error) as? [Filter]
+            } else {
+                self.filterArray = filters
+            }
         }
-        
-        self.resetFilterThumbnails()
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
-        
-        // Do any additional setup after loading the view, typically from a nib.
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func seedCoreData() {
+        var sepia = NSEntityDescription.insertNewObjectForEntityForName("Filter", inManagedObjectContext: self.managedObjectContext) as Filter
+        sepia.name = "CISepiaTone"
+        
+        var gaussianBlur = NSEntityDescription.insertNewObjectForEntityForName("Filter", inManagedObjectContext: self.managedObjectContext) as Filter
+        gaussianBlur.name = "CIGaussianBlur"
+        gaussianBlur.favorited = true
+        
+        var pixellate = NSEntityDescription.insertNewObjectForEntityForName("Filter", inManagedObjectContext: managedObjectContext) as Filter
+        pixellate.name = "CIPixellate"
+        
+        var gammaAdjust = NSEntityDescription.insertNewObjectForEntityForName("Filter", inManagedObjectContext: managedObjectContext) as Filter
+        gammaAdjust.name = "CIGammaAdjust"
+        
+        var exposureAdjust = NSEntityDescription.insertNewObjectForEntityForName("Filter", inManagedObjectContext: managedObjectContext) as Filter
+        exposureAdjust.name = "CIExposureAdjust"
+        
+        var chrome = NSEntityDescription.insertNewObjectForEntityForName("Filter", inManagedObjectContext: managedObjectContext) as Filter
+        chrome.name = "CIPhotoEffectChrome"
+        
+        var instant = NSEntityDescription.insertNewObjectForEntityForName("Filter", inManagedObjectContext: managedObjectContext) as Filter
+        instant.name = "CIPhotoEffectInstant"
+        
+        var mono = NSEntityDescription.insertNewObjectForEntityForName("Filter", inManagedObjectContext: managedObjectContext) as Filter
+        mono.name = "CIPhotoEffectMono"
+        
+        var noir = NSEntityDescription.insertNewObjectForEntityForName("Filter", inManagedObjectContext: managedObjectContext) as Filter
+        noir.name = "CIPhotoEffectNoir"
+        
+        var tonal = NSEntityDescription.insertNewObjectForEntityForName("Filter", inManagedObjectContext: managedObjectContext) as Filter
+        tonal.name = "CIPhotoEffectTonal"
+        
+        var error: NSError?
+        self.managedObjectContext?.save(&error)
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let destinationVC = segue.destinationViewController as GalleryViewController
-        destinationVC.delegate = self
+    func resetThumbnails() {
+        
+        //first we generate the thumbnail from the image that was selected
+        var size = CGSize(width: 100, height: 100)
+        UIGraphicsBeginImageContext(size)
+        self.photoImageView.image?.drawInRect(CGRect(x: 0, y: 0, width: 100, height: 100))
+        self.originalThumbnail = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        //now we need to setup our thumbnail containers
+        var newThumbnailContainers = [ThumbnailContainer]()
+        for var index = 0; index < self.filterArray?.count; ++index {
+            let filter = self.filterArray![index]
+            var thumbnailContainer = ThumbnailContainer(filterName: filter.name, thumbnail: self.originalThumbnail!, queue: self.imageQueue, context: self.gpuContext!)
+            newThumbnailContainers.append(thumbnailContainer)
+        }
+        self.thumbnailContainers = newThumbnailContainers
+        self.collectionView.reloadData()
     }
 
     @IBAction func photoButtonPressed (sender: AnyObject) {
@@ -111,22 +157,30 @@ class ViewController: UIViewController, GalleryDelegate, UIImagePickerController
         self.presentViewController(alertControlller, animated: true, completion: nil)
     }
     
+    //IMAGEPICKER DELEGATE
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         self.photoImageView.image = info[UIImagePickerControllerEditedImage] as? UIImage
+        self.resetThumbnails()
         dismissViewControllerAnimated(true, completion: nil)
     }
     
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let destinationVC = segue.destinationViewController as GalleryViewController
+        destinationVC.delegate = self
+    }
+    
+    //COLLECTIONVIEW DATASOURCE & DELEGATE
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("FILTER_CELL", forIndexPath: indexPath) as FilterThumbnailCell
-        var filterThumbnail = self.filterThumbnails[indexPath.row]
-        if filterThumbnail.filteredThumbnail != nil {
-            cell.imageView.image = filterThumbnail.filteredThumbnail
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("THUMBNAIL_CELL", forIndexPath: indexPath) as ThumbnailCell
+        var thumbnailContainer = self.thumbnailContainers[indexPath.row]
+        if thumbnailContainer.filteredThumbnail != nil {
+            cell.imageView.image = thumbnailContainer.filteredThumbnail
         } else {
-            cell.imageView.image = filterThumbnail.originalThumbnail
-            filterThumbnail.generateThumbnail({ (image) -> Void in
+            cell.imageView.image = thumbnailContainer.originalThumbnail
+            thumbnailContainer.generateFilterThumbnail({ (filteredThumb) -> Void in
                 
-                if let cell = collectionView.cellForItemAtIndexPath(indexPath) as? FilterThumbnailCell {
-                    cell.imageView.image = image
+                if let cell = collectionView.cellForItemAtIndexPath(indexPath) as? ThumbnailCell {
+                    cell.imageView.image = filteredThumb
                 }
             })
         }
@@ -134,31 +188,22 @@ class ViewController: UIViewController, GalleryDelegate, UIImagePickerController
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        var filteredThumbnail = FilterThumbnail(name: self.filterArray[indexPath.row].name, thumbnail: self.photoImageView.image!, queue: imageQueue, context: self.coreImageContext!)
-        filteredThumbnail.generateThumbnail { (image) -> Void in
-            self.photoImageView.image = image
+        var thumbnailContainer = ThumbnailContainer(filterName: self.filterArray![indexPath.row].name, thumbnail: self.photoImageView.image!, queue: self.imageQueue, context: self.gpuContext!)
+        thumbnailContainer.generateFilterThumbnail { (filteredthumb) -> Void in
+            self.photoImageView.image = filteredthumb
         }
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return filterArray.count
+        return self.thumbnailContainers.count
     }
     
     func didTapOnPicture(image: UIImage) {
         self.photoImageView.image = image
-        self.generateThumbnail()
-        self.resetFilterThumbnails()
-        self.collectionView.reloadData()
+        self.resetThumbnails()
     }
     
-    func generateThumbnail () {
-        var size = CGSize(width: 100, height: 100)
-        UIGraphicsBeginImageContext(size)
-        self.photoImageView.image?.drawInRect(CGRect(x: 0, y: 0, width: 100, height: 100))
-        self.originalThumbnail = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-    }
-    
+    //HELPER FUNCTIONS
     func enterFilterMode () {
         self.collectionViewBottomConstraint.constant = 100
         self.imageViewBottomConstraint.constant = self.imageViewBottomConstraint.constant * 3
@@ -183,28 +228,5 @@ class ViewController: UIViewController, GalleryDelegate, UIImagePickerController
         UIView.animateWithDuration(0.4, animations: { () -> Void in
             self.view.layoutIfNeeded()
         })
-    }
-    
-    func fetchFilters () {
-        var fetchRequest = NSFetchRequest(entityName: "Filter")
-        var appDelegate = UIApplication.sharedApplication().delegate as AppDelegate
-        var context = appDelegate.managedObjectContext
-        var error: NSError?
-        var fetchResults = context?.executeFetchRequest(fetchRequest, error: &error)
-        if let filters = fetchResults as? [Filter] {
-            self.filterArray = filters
-        }
-    }
-    
-    func resetFilterThumbnails () {
-        var newFilters = [FilterThumbnail]()
-        for var index = 0; index < self.filterArray.count; ++index {
-            var filter = self.filterArray[index]
-            var filterName = filter.name
-            var thumbnail = FilterThumbnail(name: filterName, thumbnail: self.originalThumbnail!, queue: self.imageQueue, context: self.coreImageContext!)
-            newFilters.append(thumbnail)
-        }
-        self.filterThumbnails = newFilters
-        self.collectionView.reloadData()
     }
 }
