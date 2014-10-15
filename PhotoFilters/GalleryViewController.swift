@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol GalleryDelegate {
+protocol PassToVCDelegate {
     func didTapOnPicture (image: UIImage)
 }
 
@@ -18,7 +18,7 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     
     var images = [UIImage]()
     
-    var delegate : GalleryDelegate?
+    var delegate : PassToVCDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()

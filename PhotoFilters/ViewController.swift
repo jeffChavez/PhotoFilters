@@ -11,7 +11,7 @@ import CoreData
 import CoreImage
 import OpenGLES
 
-class ViewController: UIViewController, GalleryDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
+class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
  
     @IBOutlet var photoImageView : UIImageView!
     @IBOutlet var collectionView : UICollectionView!
@@ -113,6 +113,9 @@ class ViewController: UIViewController, GalleryDelegate, UIImagePickerController
         let galleryAction = UIAlertAction(title: "Gallery", style: UIAlertActionStyle.Default) { (action) -> Void in
             self.performSegueWithIdentifier("SHOW_GALLERY", sender: self)
         }
+        let photoFrameworkAction = UIAlertAction(title: "Photos Framework", style: UIAlertActionStyle.Default) { (action) -> Void in
+            self.performSegueWithIdentifier("SHOW_PHOTO_FRAMEWORK", sender: self)
+        }
         let photoAlbumAction = UIAlertAction(title: "Album", style: UIAlertActionStyle.Default) { (action) -> Void in
             let imagePicker = UIImagePickerController()
             imagePicker.allowsEditing = true
@@ -135,7 +138,6 @@ class ViewController: UIViewController, GalleryDelegate, UIImagePickerController
                 alertView.show()
             }
         }
-        
         let filterAction = UIAlertAction(title: "Filter", style: UIAlertActionStyle.Default) { (action) -> Void in
             self.enterFilterMode()
         }
@@ -143,8 +145,8 @@ class ViewController: UIViewController, GalleryDelegate, UIImagePickerController
             self.photoImageView.image = nil
         }
         let cancelAction = UIAlertAction(title: "cancel", style: UIAlertActionStyle.Cancel, handler: nil)
-        
         alertControlller.addAction(galleryAction)
+        alertControlller.addAction(photoFrameworkAction)
         alertControlller.addAction(photoAlbumAction)
         alertControlller.addAction(cameraAction)
         if self.photoImageView.image != nil {
@@ -152,7 +154,6 @@ class ViewController: UIViewController, GalleryDelegate, UIImagePickerController
             alertControlller.addAction(deleteAction)
         }
         alertControlller.addAction(cancelAction)
-        
         //when the view controller is presented a strong reference is created.
         self.presentViewController(alertControlller, animated: true, completion: nil)
     }
@@ -165,8 +166,14 @@ class ViewController: UIViewController, GalleryDelegate, UIImagePickerController
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let destinationVC = segue.destinationViewController as GalleryViewController
-        destinationVC.delegate = self
+        if segue.identifier == "SHOW_GALLERY"{
+            let destinationVC = segue.destinationViewController as GalleryViewController
+            destinationVC.delegate = self
+        } else {
+            let destinationVC = segue.destinationViewController as PhotoFrameworkViewController
+            destinationVC.delegate = self
+            destinationVC.vcCellSize = self.photoImageView.frame.size
+        }
     }
     
     //COLLECTIONVIEW DATASOURCE & DELEGATE
