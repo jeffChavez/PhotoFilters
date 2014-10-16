@@ -85,6 +85,7 @@
                         <outlet property="photoImageView" destination="iPn-5f-f4J" id="r5h-nK-pHl"/>
                         <segue destination="h9D-1M-iUi" kind="presentation" identifier="SHOW_GALLERY" id="Ovz-Nq-Ofu"/>
                         <segue destination="oAv-ps-Pol" kind="presentation" identifier="SHOW_PHOTO_FRAMEWORK" id="OMy-AC-AXE"/>
+                        <segue destination="pDh-8Q-jBY" kind="presentation" identifier="SHOW_AV" id="DC2-QC-89U"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -186,12 +187,57 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="photoCollectionView" destination="T0q-Nj-lwq" id="zBm-h0-1Kf"/>
+                        <outlet property="collectionView" destination="T0q-Nj-lwq" id="MjN-dc-v6Y"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lSg-om-71d" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1801" y="381"/>
+        </scene>
+        <!--Foundation Camera View Controller-->
+        <scene sceneID="5N1-96-fga">
+            <objects>
+                <viewController id="pDh-8Q-jBY" customClass="AVFoundationCameraViewController" customModule="PhotoFilters" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="LiA-yd-4vY"/>
+                        <viewControllerLayoutGuide type="bottom" id="qdq-97-jQw"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="dgV-wf-zoU">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="u7i-uZ-tAd">
+                                <rect key="frame" x="225" y="370" width="150" height="150"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="150" id="2QB-x5-xGX"/>
+                                    <constraint firstAttribute="height" constant="150" id="7nj-de-Bmw"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WJJ-vL-MgI">
+                                <rect key="frame" x="273" y="528" width="55" height="30"/>
+                                <state key="normal" title="Capture">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="capturePressed:" destination="pDh-8Q-jBY" eventType="touchUpInside" id="LGN-f1-wnn"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="WJJ-vL-MgI" firstAttribute="top" secondItem="u7i-uZ-tAd" secondAttribute="bottom" constant="8" id="asg-ko-T4q"/>
+                            <constraint firstAttribute="centerX" secondItem="WJJ-vL-MgI" secondAttribute="centerX" id="eg9-rK-2ZU"/>
+                            <constraint firstItem="u7i-uZ-tAd" firstAttribute="top" secondItem="LiA-yd-4vY" secondAttribute="bottom" constant="350" id="m9P-Eg-L1J"/>
+                            <constraint firstAttribute="centerX" secondItem="u7i-uZ-tAd" secondAttribute="centerX" id="pwq-GD-Lew"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="capturePreviewImageView" destination="u7i-uZ-tAd" id="mS3-40-MiD"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XUY-Qq-pvX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1801" y="1138"/>
         </scene>
         <!--Photo Framework View Controller-->
         <scene sceneID="vkW-j4-dMu">

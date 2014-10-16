@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6B7B000119F06AF40008C226 /* PinchGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B7B000019F06AF40008C226 /* PinchGesture.swift */; };
+		6B7B000519F07E090008C226 /* AVFoundationCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B7B000419F07E090008C226 /* AVFoundationCameraViewController.swift */; };
 		6B8464F219EF10B3006E63C5 /* ThumbnailContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B8464F119EF10B3006E63C5 /* ThumbnailContainer.swift */; };
 		6B8464F419EF10C8006E63C5 /* ThumbnailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B8464F319EF10C8006E63C5 /* ThumbnailCell.swift */; };
 		6B9B0E1C19EF1A74005E95E5 /* PhotoFrameworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9B0E1B19EF1A74005E95E5 /* PhotoFrameworkViewController.swift */; };
@@ -40,6 +42,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6B7B000019F06AF40008C226 /* PinchGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinchGesture.swift; sourceTree = "<group>"; };
+		6B7B000419F07E090008C226 /* AVFoundationCameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVFoundationCameraViewController.swift; sourceTree = "<group>"; };
 		6B8464F119EF10B3006E63C5 /* ThumbnailContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbnailContainer.swift; sourceTree = "<group>"; };
 		6B8464F319EF10C8006E63C5 /* ThumbnailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbnailCell.swift; sourceTree = "<group>"; };
 		6B9B0E1B19EF1A74005E95E5 /* PhotoFrameworkViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoFrameworkViewController.swift; sourceTree = "<group>"; };
@@ -108,7 +112,6 @@
 				6BAA63E419EC3483007AEFB8 /* Controller */,
 				6BAA63E319EC347E007AEFB8 /* Model */,
 				6BAA63E519EC3488007AEFB8 /* View */,
-				6BAA63C019EC3468007AEFB8 /* AppDelegate.swift */,
 				6BAA63CA19EC3468007AEFB8 /* Images.xcassets */,
 				6BAA63CC19EC3468007AEFB8 /* LaunchScreen.xib */,
 				6BAA63C219EC3468007AEFB8 /* PhotoFilters.xcdatamodeld */,
@@ -151,6 +154,7 @@
 			children = (
 				6BA1142E19EDD51A0080576C /* Filter.swift */,
 				6B8464F119EF10B3006E63C5 /* ThumbnailContainer.swift */,
+				6B7B000019F06AF40008C226 /* PinchGesture.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -158,8 +162,11 @@
 		6BAA63E419EC3483007AEFB8 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				6BAA63C019EC3468007AEFB8 /* AppDelegate.swift */,
 				6BAA63C519EC3468007AEFB8 /* ViewController.swift */,
 				6BAA63E619EC3C85007AEFB8 /* GalleryViewController.swift */,
+				6B9B0E1B19EF1A74005E95E5 /* PhotoFrameworkViewController.swift */,
+				6B7B000419F07E090008C226 /* AVFoundationCameraViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -169,7 +176,6 @@
 			children = (
 				6BAA63C719EC3468007AEFB8 /* Main.storyboard */,
 				6BAA641E19EC42E7007AEFB8 /* GalleryCell.swift */,
-				6B9B0E1B19EF1A74005E95E5 /* PhotoFrameworkViewController.swift */,
 				6B9B0E1D19EF1AB2005E95E5 /* PhotoFrameworkCell.swift */,
 				6B8464F319EF10C8006E63C5 /* ThumbnailCell.swift */,
 				6BAA645519EC8389007AEFB8 /* Header.swift */,
@@ -288,8 +294,10 @@
 				6B8464F219EF10B3006E63C5 /* ThumbnailContainer.swift in Sources */,
 				6BAA641F19EC42E7007AEFB8 /* GalleryCell.swift in Sources */,
 				6BAA63E719EC3C85007AEFB8 /* GalleryViewController.swift in Sources */,
+				6B7B000119F06AF40008C226 /* PinchGesture.swift in Sources */,
 				6BAA63C419EC3468007AEFB8 /* PhotoFilters.xcdatamodeld in Sources */,
 				6BAA645819EC8397007AEFB8 /* Footer.swift in Sources */,
+				6B7B000519F07E090008C226 /* AVFoundationCameraViewController.swift in Sources */,
 				6BAA645619EC8389007AEFB8 /* Header.swift in Sources */,
 				6B9B0E1C19EF1A74005E95E5 /* PhotoFrameworkViewController.swift in Sources */,
 				6BAA63C119EC3468007AEFB8 /* AppDelegate.swift in Sources */,

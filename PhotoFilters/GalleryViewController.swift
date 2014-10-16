@@ -14,17 +14,20 @@ protocol PassToVCDelegate {
 
 class GalleryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
 
-    @IBOutlet var photoCollectionView : UICollectionView!
+    @IBOutlet var collectionView : UICollectionView!
     
     var images = [UIImage]()
+    
+    var flowLayout : UICollectionViewFlowLayout!
+    var pinchGesture = PinchGesture()
     
     var delegate : PassToVCDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.photoCollectionView.dataSource = self
-        self.photoCollectionView.delegate = self
+        self.collectionView.dataSource = self
+        self.collectionView.delegate = self
         
         var image1 = UIImage(named: "edmPic1")
         var image2 = UIImage(named: "edmPic2")
@@ -36,6 +39,13 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
         self.images.append(image3)
         self.images.append(image4)
         
+        self.flowLayout = self.collectionView.collectionViewLayout as UICollectionViewFlowLayout
+        
+        self.pinchGesture.collectionView = self.collectionView
+        self.pinchGesture.flowLayout = self.flowLayout
+        
+        var pinchRecognizer = UIPinchGestureRecognizer(target: pinchGesture, action: "handlePinch:")
+        self.collectionView.addGestureRecognizer(pinchRecognizer)
         // Do any additional setup after loading the view.
     }
 

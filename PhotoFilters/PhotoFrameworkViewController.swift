@@ -16,12 +16,13 @@ class PhotoFrameworkViewController: UIViewController, UICollectionViewDataSource
     var assetFetchResults: PHFetchResult!
     var assetCollection: PHAssetCollection!
     var imageManager: PHCachingImageManager!
+    var flowLayout : UICollectionViewFlowLayout!
     var assetCellSize: CGSize!
     var vcCellSize: CGSize!
     
     var images = [UIImage]()
-    
     var delegate : PassToVCDelegate?
+    var pinchGesture = PinchGesture()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,10 +35,15 @@ class PhotoFrameworkViewController: UIViewController, UICollectionViewDataSource
         
         // Determine device scale, adjust asset cell size
         var scale = UIScreen.mainScreen().scale
-        var flowLayout = self.collectionView.collectionViewLayout as UICollectionViewFlowLayout
-        
+        self.flowLayout = self.collectionView.collectionViewLayout as UICollectionViewFlowLayout
         var cellSize = flowLayout.itemSize
         self.assetCellSize = CGSizeMake(cellSize.width * scale, cellSize.height * scale)
+        
+        //reuse PinchGesture
+        self.pinchGesture.collectionView = self.collectionView
+        self.pinchGesture.flowLayout = self.flowLayout
+        var pinchRecognizer = UIPinchGestureRecognizer(target: pinchGesture, action: "handlePinch:")
+        self.collectionView.addGestureRecognizer(pinchRecognizer)
         
         self.collectionView.delegate = self
         self.collectionView.dataSource = self

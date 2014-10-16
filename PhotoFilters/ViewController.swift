@@ -26,6 +26,8 @@ class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControlle
     var originalThumbnail : UIImage?
     var gpuContext : CIContext?
     var imageQueue = NSOperationQueue()
+    var originalImage : UIImage?
+    var filteredImage : UIImage?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -116,6 +118,9 @@ class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControlle
         let photoFrameworkAction = UIAlertAction(title: "Photos Framework", style: UIAlertActionStyle.Default) { (action) -> Void in
             self.performSegueWithIdentifier("SHOW_PHOTO_FRAMEWORK", sender: self)
         }
+        let avFoundationAction = UIAlertAction(title: "AVFoundation", style: UIAlertActionStyle.Default) { (action) -> Void in
+            self.performSegueWithIdentifier("SHOW_AV", sender: self)
+        }
         let photoAlbumAction = UIAlertAction(title: "Album", style: UIAlertActionStyle.Default) { (action) -> Void in
             let imagePicker = UIImagePickerController()
             imagePicker.allowsEditing = true
@@ -149,6 +154,7 @@ class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControlle
         alertControlller.addAction(photoFrameworkAction)
         alertControlller.addAction(photoAlbumAction)
         alertControlller.addAction(cameraAction)
+        alertControlller.addAction(avFoundationAction)
         if self.photoImageView.image != nil {
             alertControlller.addAction(filterAction)
             alertControlller.addAction(deleteAction)
@@ -161,6 +167,7 @@ class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControlle
     //IMAGEPICKER DELEGATE
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         self.photoImageView.image = info[UIImagePickerControllerEditedImage] as? UIImage
+        self.originalImage = info[UIImagePickerControllerEditedImage] as? UIImage
         self.resetThumbnails()
         dismissViewControllerAnimated(true, completion: nil)
     }
@@ -169,10 +176,13 @@ class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControlle
         if segue.identifier == "SHOW_GALLERY"{
             let destinationVC = segue.destinationViewController as GalleryViewController
             destinationVC.delegate = self
-        } else {
+        } else if segue.identifier == "SHOW_PHOTO_FRAMEWORK" {
             let destinationVC = segue.destinationViewController as PhotoFrameworkViewController
             destinationVC.delegate = self
             destinationVC.vcCellSize = self.photoImageView.frame.size
+        } else {
+            let destinationVC = segue.destinationViewController as AVFoundationCameraViewController
+            destinationVC.delegate = self
         }
     }
     
@@ -195,10 +205,24 @@ class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControlle
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        var thumbnailContainer = ThumbnailContainer(filterName: self.filterArray![indexPath.row].name, thumbnail: self.photoImageView.image!, queue: self.imageQueue, context: self.gpuContext!)
-        thumbnailContainer.generateFilterThumbnail { (filteredthumb) -> Void in
-            self.photoImageView.image = filteredthumb
-        }
+        self.imageQueue.addOperationWithBlock(
+            { () -> Void in
+                var image = CIImage(image: self.originalImage)
+                var imageFilter = CIFilter(name: self.filterArray![indexPath.row].name)
+                imageFilter.setDefaults()
+                imageFilter.setValue(image, forKey: kCIInputImageKey)
+                
+                //generate the results
+                var result = imageFilter.valueForKey(kCIOutputImageKey) as CIImage
+                var extent = result.extent()
+                var imageRef = self.gpuContext!.createCGImage(result, fromRect: extent)
+                
+                NSOperationQueue.mainQueue().addOperationWithBlock(
+                    { () -> Void in
+                        var filteredImage = UIImage(CGImage: imageRef)
+                        self.photoImageView.image = filteredImage
+                })
+        })
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -207,6 +231,7 @@ class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControlle
     
     func didTapOnPicture(image: UIImage) {
         self.photoImageView.image = image
+        self.originalImage = image
         self.resetThumbnails()
     }
     
@@ -221,11 +246,14 @@ class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControlle
             self.view.layoutIfNeeded()
         })
         
-        var doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Done, target: self, action: "exitFilterMode")
+        var doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Done, target: self, action: "doneFilterMode")
         self.navigationItem.rightBarButtonItem = doneButton
+        
+        var cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Done, target: self, action: "cancelFilterMode")
+        self.navigationItem.leftBarButtonItem = cancelButton
     }
     
-    func exitFilterMode () {
+    func doneFilterMode () {
         self.collectionViewBottomConstraint.constant = -100
         self.imageViewBottomConstraint.constant = self.imageViewBottomConstraint.constant / 3
         self.imageViewLeadingConstraint.constant = self.imageViewLeadingConstraint.constant / 3
@@ -235,5 +263,21 @@ class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControlle
         UIView.animateWithDuration(0.4, animations: { () -> Void in
             self.view.layoutIfNeeded()
         })
+        
+        self.originalImage = self.photoImageView.image
+    }
+    
+    func cancelFilterMode () {
+        self.collectionViewBottomConstraint.constant = -100
+        self.imageViewBottomConstraint.constant = self.imageViewBottomConstraint.constant / 3
+        self.imageViewLeadingConstraint.constant = self.imageViewLeadingConstraint.constant / 3
+        self.imageViewTrailingConstraint.constant = self.imageViewTrailingConstraint.constant / 3
+        self.navigationItem.rightBarButtonItem = nil
+        
+        UIView.animateWithDuration(0.4, animations: { () -> Void in
+            self.view.layoutIfNeeded()
+        })
+        
+        self.photoImageView.image = self.originalImage
     }
 }
