@@ -69,6 +69,7 @@
 		6BAA645519EC8389007AEFB8 /* Header.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
 		6BAA645719EC8397007AEFB8 /* Footer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Footer.swift; sourceTree = "<group>"; };
 		6BB6B2B419F3BD3B0036657E /* generics.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = generics.playground; sourceTree = "<group>"; };
+		6BB6B2B519F3BF000036657E /* StackandQueue.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = StackandQueue.playground; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +123,7 @@
 				6BA1143319EDEAFE0080576C /* edmPic4.jpg */,
 				6BAA63BF19EC3468007AEFB8 /* Info.plist */,
 				6BB6B2B419F3BD3B0036657E /* generics.playground */,
+				6BB6B2B519F3BF000036657E /* StackandQueue.playground */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
