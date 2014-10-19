@@ -85,7 +85,7 @@ class AVFoundationCameraViewController: UIViewController {
     }
     
     func doneTakingPicture () {
-        delegate?.didTapOnPicture(self.capturePreviewImageView.image!)
+        self.delegate?.didTapOnPicture(self.capturePreviewImageView.image!)
         dismissViewControllerAnimated(true, completion: nil)
     }
     

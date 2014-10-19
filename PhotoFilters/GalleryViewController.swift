@@ -65,7 +65,7 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        delegate?.didTapOnPicture(self.images[indexPath.row])
+        self.delegate?.didTapOnPicture(self.images[indexPath.row])
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     

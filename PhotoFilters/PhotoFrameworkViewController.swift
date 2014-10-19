@@ -13,12 +13,12 @@ class PhotoFrameworkViewController: UIViewController, UICollectionViewDataSource
 
     @IBOutlet var collectionView : UICollectionView!
     
-    var assetFetchResults: PHFetchResult!
-    var assetCollection: PHAssetCollection!
-    var imageManager: PHCachingImageManager!
+    var assetFetchResults : PHFetchResult!
+    var assetCollection : PHAssetCollection!
+    var imageManager : PHCachingImageManager!
     var flowLayout : UICollectionViewFlowLayout!
-    var assetCellSize: CGSize!
-    var vcCellSize: CGSize!
+    var assetCellSize : CGSize!
+    var vcCellSize : CGSize!
     
     var images = [UIImage]()
     var delegate : PassToVCDelegate?
