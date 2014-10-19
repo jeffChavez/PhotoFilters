@@ -286,7 +286,7 @@ class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControlle
         var cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Done, target: self, action: "cancelFilterMode")
         self.navigationItem.leftBarButtonItem = cancelButton
     }
-    
+
     func doneFilterMode () {
         self.photoButtonPressed.hidden = false
         self.collectionViewBottomConstraint.constant = -100
