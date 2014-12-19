@@ -1,6 +1,6 @@
 PhotoFilters
 ============
-Week 2 Assignment
+Week 2 Assignment<br>
 Add your favorite "Instagram" filters to any photo<br>
 
 Selecting a photo from a photo gallery (collection view)<br>
