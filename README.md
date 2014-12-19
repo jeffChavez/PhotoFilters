@@ -3,10 +3,10 @@ PhotoFilters
 Week 2 Assignment
 Add your favorite "Instagram" filters to any photo<br>
 
-Selecting a photo from a photo gallery (collection view)
+Selecting a photo from a photo gallery (collection view)<br>
 ![Imgur](http://i.imgur.com/L1IYqtZ.gif)
 
-Selecting a filter by scrolling through thumbnail images representing a specific filter
+Selecting a filter by scrolling through thumbnail images representing a specific filter<br>
 ![Imgur](http://i.imgur.com/4hUO1ao.gif)
 
 ###Features
