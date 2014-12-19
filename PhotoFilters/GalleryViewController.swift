@@ -29,15 +29,15 @@ class GalleryViewController: UIViewController, UICollectionViewDataSource, UICol
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
         
-        var image1 = UIImage(named: "edmPic1")
-        var image2 = UIImage(named: "edmPic2")
-        var image3 = UIImage(named: "edmPic3")
-        var image4 = UIImage(named: "edmPic4")
+        var image1 = UIImage(named: "edmPic1.jpg")
+        var image2 = UIImage(named: "edmPic2.jpg")
+        var image3 = UIImage(named: "edmPic3.jpg")
+        var image4 = UIImage(named: "edmPic4.jpg")
         
-        self.images.append(image1)
-        self.images.append(image2)
-        self.images.append(image3)
-        self.images.append(image4)
+        self.images.append(image1!)
+        self.images.append(image2!)
+        self.images.append(image3!)
+        self.images.append(image4!)
         
         self.flowLayout = self.collectionView.collectionViewLayout as UICollectionViewFlowLayout
         

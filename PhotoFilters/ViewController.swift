@@ -275,9 +275,9 @@ class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControlle
         
         UIView.animateWithDuration(0.4, animations: { () -> Void in
             self.view.layoutIfNeeded()
-            self.redBox.frame.origin.x = 100
-            self.blueBox.frame.origin.x = 150
-            self.greenBox.frame.origin.x = 200
+            self.redBox.center.x = self.view.center.x - 50
+            self.blueBox.center.x = self.view.center.x
+            self.greenBox.center.x = self.view.center.x + 50
         })
         
         var doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Done, target: self, action: "doneFilterMode")
@@ -385,7 +385,7 @@ class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControlle
                 var image = CIImage(image: self.originalImage)
                 var imageFilter = CIFilter(name: "CIColorMonochrome")
                 imageFilter.setDefaults()
-                var color = CIColor(color: self.redBox.backgroundColor)
+                var color = CIColor(color: self.redBox.backgroundColor!)
                 var number = 1 * 1.25
                 imageFilter.setValue(image, forKey: kCIInputImageKey)
                 imageFilter.setValue(color, forKey: kCIInputColorKey)
@@ -408,7 +408,7 @@ class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControlle
                 var image = CIImage(image: self.originalImage)
                 var imageFilter = CIFilter(name: "CIColorMonochrome")
                 imageFilter.setDefaults()
-                var color = CIColor(color: self.blueBox.backgroundColor)
+                var color = CIColor(color: self.blueBox.backgroundColor!)
                 var number = 1 * 1.25
                 imageFilter.setValue(image, forKey: kCIInputImageKey)
                 imageFilter.setValue(color, forKey: kCIInputColorKey)
@@ -431,7 +431,7 @@ class ViewController: UIViewController, PassToVCDelegate, UIImagePickerControlle
                 var image = CIImage(image: self.originalImage)
                 var imageFilter = CIFilter(name: "CIColorMonochrome")
                 imageFilter.setDefaults()
-                var color = CIColor(color: self.greenBox.backgroundColor)
+                var color = CIColor(color: self.greenBox.backgroundColor!)
                 var number = 1 * 1.25
                 imageFilter.setValue(image, forKey: kCIInputImageKey)
                 imageFilter.setValue(color, forKey: kCIInputColorKey)
