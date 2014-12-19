@@ -4,10 +4,10 @@ Week 2 Assignment<br><br>
 Add your favorite "Instagram" filters to any photo<br>
 
 Selecting a photo from a photo gallery (collection view)<br>
-![Imgur](http://i.imgur.com/L1IYqtZ.gif)
+![Imgur](https://github.com/jeffChavez/PhotoFilters/blob/master/PhotoFilters1.gif)
 
 Selecting a filter by scrolling through thumbnail images representing a specific filter<br>
-![Imgur](http://i.imgur.com/4hUO1ao.gif)
+![Imgur](https://github.com/jeffChavez/PhotoFilters/blob/master/PhotoFilters2.gif)
 
 ###Features
 - CoreData for persisting the different filter name strings
