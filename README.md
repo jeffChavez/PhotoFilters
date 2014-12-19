@@ -17,7 +17,7 @@ Selecting a filter by scrolling through thumbnail images representing a specific
 - `UICollectionViewFlowLayout` for using a pinch gesture to resize collection views
 - AVFoundation for taking pictures
 - Working with `NSLayoutConstraint` to move objects instead of `view.center`
-- Delegation, for passing the image selected back in `GalleryViewController` back to `ViewController`
+- Delegation, for passing the image selected in `GalleryViewController` back to `ViewController`
 - Animations
 - Programatically created User interfaces (the three colored boxes when selecting a filter)
 
