@@ -12,7 +12,7 @@ Selecting a filter by scrolling through thumbnail images representing a specific
 ###Features
 - CoreData for persisting the different filter name strings
 - CoreImage for image filters, using custom input keys for specific filters
-- Photos for saving to photo album
+- Photos Framework for saving to photo album
 - `UICollectionView`
 - `UICollectionViewFlowLayout` for using a pinch gesture to resize collection views
 - AVFoundation for taking pictures
